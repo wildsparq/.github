@@ -1,1 +1,13 @@
-
+version: 1
+merge:
+  ignore:
+    labels: ["HOLD"]
+  method: squash
+  options:
+    squash:
+      title: "pull_request_title"
+      body: "pull_request_body"
+  delete_after_merge: true
+  allow_merge_with_no_checks: true
+update:
+  ignore_drafts: true
