@@ -2,7 +2,6 @@ version: 1
 merge:
   ignore:
     labels: ["HOLD"]
-    comment_substrings: ["HOLD"]
   method: squash
   options:
     squash:
