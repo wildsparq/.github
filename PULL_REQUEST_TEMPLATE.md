@@ -1,5 +1,5 @@
 ## Related Jira Tickets
-_Paste all associated Jira tickets that your PR addresses (include a link to parent if applicable too)_
+_Paste links to all associated Jira tickets that your PR addresses (include a link to parent if applicable too)_
 
 ## Purpose/Bug 
 _Describe the problem or feature in addition to a link to the issues._
