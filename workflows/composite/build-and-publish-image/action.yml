@@ -1,0 +1,48 @@
+name: "Build And Publish Image"
+description: "Build and publish Image to an ECR Repository"
+
+inputs:
+  repository_name: 
+    description: 'The name of the ECR repository to upload image to'     
+    required: true
+  image_name:
+    description: 'The name of the image being uploaded to the ECR repository'
+    required: true
+  registry_name: 
+    description: 'The name of the ECR registry for the environment'     
+    required: true
+  docker_file: 
+    description: 'The path to the dockerfile'
+    required: true
+  image_property_name:
+    required: true
+    description: 'The name of the corresponding image property in the infrastructure'
+  github_token:
+    required: true
+    description: 'The admin github token'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Identity - Build, tag, and push image to Amazon ECR
+      id: build-image
+      shell: bash
+      env:
+        ECR_REGISTRY: ${{ inputs.registry_name }}
+        DOCKER_FILE: ${{ inputs.docker_file }}
+        REPO_NAME: ${{inputs.repository_name}}:${{inputs.image_name}}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        IMAGE_NAME=$ECR_REGISTRY/$REPO_NAME
+        docker build -f $DOCKER_FILE -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+        echo "::set-output name=image::$IMAGE_NAME"
+
+    - uses: ./workflows/composite/set-infrastructure-image-property
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix'
+      with:
+        image_property_name: ${{inputs.image_property_name}}
+        github_token: ${{inputs.github_token}}
+        image_name: ${{inputs.image_name}}
