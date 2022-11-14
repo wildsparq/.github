@@ -39,8 +39,13 @@ runs:
         docker build -f $DOCKER_FILE -t $IMAGE_NAME .
         docker push $IMAGE_NAME
         echo "::set-output name=image::$IMAGE_NAME"
+      
+    - name: Get other actions
+      uses: actions/checkout@v2
+      with:
+        path: .github
 
-    - uses: ./workflows/composite/set-infrastructure-image-property
+    - uses: ./.github/workflows/composite/set-infrastructure-image-property
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix'
       with:
         image_property_name: ${{inputs.image_property_name}}
