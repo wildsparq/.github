@@ -27,7 +27,7 @@ runs:
         path: './infra'
 
     - name: Write value to Infrastructure Properties-file
-      uses: christian-draeger/write-properties@1.1.0
+      uses: christian-draeger/write-properties@1.0.1
       with:
         path: './infra/.aws/cdk/image.properties'
         property: '${{inputs.image_property_name}}'
