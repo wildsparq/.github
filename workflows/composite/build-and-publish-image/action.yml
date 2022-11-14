@@ -44,11 +44,11 @@ runs:
       uses: actions/checkout@v2
       with:
         repository: wildsparq/.github
-        token: ${{ secrets.GH_TOKEN }}
+        token: ${{ inputs.github_token }}
         path: .github
 
     - uses: ./.github/workflows/composite/set-infrastructure-image-property
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix'
+      if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix')
       with:
         image_property_name: ${{inputs.image_property_name}}
         github_token: ${{inputs.github_token}}
