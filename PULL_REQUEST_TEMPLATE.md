@@ -1,32 +1,25 @@
-## Related Jira Tickets
+## Related Jira Ticket(s)
 _Paste links to all associated Jira tickets that your PR addresses (include a link to parent if applicable too)_
 
-## Purpose/Bug 
-_Describe the problem or feature in addition to a link to the issues._
+## Approach
+_How does this PR address the ticket?_
 
-## Approach 
-_How does this change address the problem?_
-
-## Steps to Reproduce
-_Specify specific use cases that were tested with this bug fix_
-_Use Case 1:_
-1) 
-2) 
-3)
-
-_Use Case 2:_
-1) 
-2) 
-3)
-
-## Related Pull Requests
-_Put any links to other pull requests related to this one (e.g., required API change)_
+## Versioning
+- [ ] Major (removed external functionality (like an API endpoint))
+- [ ] Minor (deprecated/added new external functionality (like an API endpoint))
+- [ ] Patch (updated internal functionality (does not require any external changes))
 
 ## Checklist
 _Before submitting the PR to the team, please fill out the self-review below_
-- [ ] I have reviewed the code changes
-- [ ] I have tested the changes in a local environment
-- [ ] My style conforms to the rest of the code base
+- [ ] I have individually reviewed all code changes in this PR
+- [ ] I have tested this branch in a local environment
+- [ ] Automated Testing
+    - [ ] I was unable to cover this PR in automated testing due to limitations in our testing infrastructure.
+    - [ ] The changes in this PR do not require automated testing.
+    - [ ] I successfully added/updated automated testing to cover changes in this PR.
+- [ ] Documentation
+    - [ ] This PR does not require documentation changes.
+    - [ ] I have updated documentation (Conflluence, README, etc.) to correspond to the changes in this PR.
 
 ## Reviewers:
 @wildsparq/developers 
