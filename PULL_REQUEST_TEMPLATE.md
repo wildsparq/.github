@@ -12,7 +12,9 @@ _How does this PR address the ticket?_
 ## Checklist
 _Before submitting the PR to the team, please fill out the self-review below_
 - [ ] I have individually reviewed all code changes in this PR
-- [ ] I have tested this branch in a local environment
+- [ ] Manual Testing
+   - [ ] I have manually ran this branch to verify the changes work as expected
+   - [ ] I have smoke tested existing functionalit in the application with these changes
 - [ ] Automated Testing
     - [ ] I was unable to cover this PR in automated testing due to limitations in our testing infrastructure.
     - [ ] The changes in this PR do not require automated testing.
