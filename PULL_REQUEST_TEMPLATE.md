@@ -6,7 +6,7 @@ _How does this PR address the ticket?_
 
 ## Versioning
 - [ ] Major (removed external functionality (like an API endpoint))
-- [ ] Minor (deprecated/added new external functionality (like an API endpoint))
+- [ ] Minor (deprecated/added external functionality (like an API endpoint))
 - [ ] Patch (updated internal functionality (does not require any external changes))
 
 ## Checklist
