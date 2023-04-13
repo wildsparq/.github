@@ -30,7 +30,8 @@ runs:
         repository: wildsparq/.github
         token: ${{ inputs.github_token }}
         path: .github 
-        
+        ref: WS-2160
+
     - uses: ./.github/workflows/composite/create-versioned-tag
       with:
         github_token: ${{inputs.github_token}}
