@@ -28,6 +28,8 @@ runs:
       shell: bash
       run: |
         cd ./origin
+        git fetch
+        echo "TEST"
         echo "commit_body=$(git log -1 --pretty=format:%b ${{github.sha}})" >> $GITHUB_OUTPUT  
 
     - uses: actions/checkout@v2
