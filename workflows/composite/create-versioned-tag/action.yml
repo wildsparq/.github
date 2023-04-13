@@ -20,7 +20,8 @@ runs:
       with:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
-        ref: ${{ env.GITHUB_REF_SLUG }}
+        # ref: ${{ env.GITHUB_REF_SLUG }}
+        ref: WS-2161
         path: 'origin'
 
     - name: Get Commit Body
