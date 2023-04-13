@@ -24,36 +24,43 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: ./.github/workflows/composite/create-versioned-tag
-      with:
-        github_token: ${{inputs.github_token}}
-
-    - name: Identity - Build, tag, and push image to Amazon ECR
-      id: build-image
-      shell: bash
-      env:
-        ECR_REGISTRY: ${{ inputs.registry_name }}
-        DOCKER_FILE: ${{ inputs.docker_file }}
-        REPO_NAME: ${{inputs.repository_name}}:${{inputs.image_name}}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        IMAGE_NAME=$ECR_REGISTRY/$REPO_NAME
-        docker build -f $DOCKER_FILE -t $IMAGE_NAME .
-        docker push $IMAGE_NAME
-        echo "::set-output name=image::$IMAGE_NAME"
-      
     - name: Get other actions
       uses: actions/checkout@v2
       with:
         repository: wildsparq/.github
         token: ${{ inputs.github_token }}
-        path: .github
-
-    - uses: ./.github/workflows/composite/set-infrastructure-image-property
-      if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix')
+        path: .github 
+        
+    - uses: ./.github/workflows/composite/create-versioned-tag
       with:
-        image_property_name: ${{inputs.image_property_name}}
         github_token: ${{inputs.github_token}}
-        image_name: ${{inputs.image_name}}
+
+    # - name: Identity - Build, tag, and push image to Amazon ECR
+    #   id: build-image
+    #   shell: bash
+    #   env:
+    #     ECR_REGISTRY: ${{ inputs.registry_name }}
+    #     DOCKER_FILE: ${{ inputs.docker_file }}
+    #     REPO_NAME: ${{inputs.repository_name}}:${{inputs.image_name}}
+    #   run: |
+    #     # Build a docker container and
+    #     # push it to ECR so that it can
+    #     # be deployed to ECS.
+    #     IMAGE_NAME=$ECR_REGISTRY/$REPO_NAME
+    #     docker build -f $DOCKER_FILE -t $IMAGE_NAME .
+    #     docker push $IMAGE_NAME
+    #     echo "::set-output name=image::$IMAGE_NAME"
+      
+    # - name: Get other actions
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: wildsparq/.github
+    #     token: ${{ inputs.github_token }}
+    #     path: .github
+
+    # - uses: ./.github/workflows/composite/set-infrastructure-image-property
+    #   if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix')
+    #   with:
+    #     image_property_name: ${{inputs.image_property_name}}
+    #     github_token: ${{inputs.github_token}}
+    #     image_name: ${{inputs.image_name}}
