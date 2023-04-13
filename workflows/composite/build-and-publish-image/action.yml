@@ -24,6 +24,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: ./.github/workflows/composite/create-versioned-tag
+      with:
+        github_token: ${{inputs.github_token}}
+
     - name: Identity - Build, tag, and push image to Amazon ECR
       id: build-image
       shell: bash
