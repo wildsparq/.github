@@ -44,5 +44,7 @@ runs:
     - name: run Jira integration script
       shell: bash
       run: |
+        echo $(${{steps.get-commit-body.outputs.commit_body}})
+        echo "!"
         pip3 install semver
         python3 ./gh/workflows/scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-commit-body.outputs.commit_body}}"
