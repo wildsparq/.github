@@ -16,12 +16,13 @@ runs:
       uses: rlespinasse/github-slug-action@v3.x
       
     - uses: actions/checkout@v2
+      name: 'Checkout current Repo'
+
+    - uses: actions/checkout@v2
       name: 'Checkout Commit Origin Repo'
       with:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
-        # ref: ${{ env.GITHUB_REF_SLUG }}
-        ref: WS-2161
         path: 'origin'
 
     - name: Get Commit Body
@@ -32,9 +33,6 @@ runs:
         git fetch
         echo "TEST"
         echo "commit_body=$(git log -1 --pretty=format:%b ${{github.sha}})" >> $GITHUB_OUTPUT  
-
-    - uses: actions/checkout@v2
-      name: 'Checkout current Repo'
 
     - name: setup python
       uses: actions/setup-python@v2
