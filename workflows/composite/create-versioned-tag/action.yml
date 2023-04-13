@@ -44,7 +44,8 @@ runs:
     - name: run Jira integration script
       shell: bash
       run: |
-        cd ../gh
+        echo $(ls)
+        cd ./gh
         echo $(ls)
         pip3 install semver
         python3 scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
