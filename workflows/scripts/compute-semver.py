@@ -11,14 +11,16 @@ if (len(sys.argv) == 4):
 
     branch_name = sys.argv[2]
     if (branch_name == ''):
-        print('Error: branch_name must not be empty')
-        exit
+        fatal('Error: branch_name must not be empty')
+        sys.exit(1)
+
     print("Branch Name: " + branch_name)
 
     commit_body = sys.argv[3]
     if (commit_body == ''):
-        print('Error: commit_body must not be empty')
-        exit
+        fatal('Error: commit_body must not be empty')
+        sys.exit(1)
+
     print("Commit Body: " + commit_body)
 
     
@@ -45,6 +47,6 @@ if (len(sys.argv) == 4):
     print(f"::set-output name=version::" + str(ver))
 
 else: 
-    print('Error: compute-semver.py requires 3 arguments to be passed (previous_version, branch_name, commit_body)')
-    exit
+    fatal('Error: compute-semver.py requires 3 arguments to be passed (previous_version, branch_name, commit_body)')
+    sys.exit(1)
 
