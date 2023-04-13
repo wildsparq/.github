@@ -45,4 +45,4 @@ runs:
       shell: bash
       run: |
         pip3 install semver
-        python3 ./gh/scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
+        python3 gh/scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
