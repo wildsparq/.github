@@ -46,4 +46,4 @@ runs:
       run: |
         echo $(ls -R)
         pip3 install semver
-        python3 gh/workflows/scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
+        python3 ./gh/workflows/helpers/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
