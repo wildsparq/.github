@@ -18,10 +18,9 @@ if (len(sys.argv) == 4):
 
     commit_body = sys.argv[3]
     if (commit_body == ''):
-        fatal('Error: commit_body must not be empty')
-        sys.exit(1)
-
-    print("Commit Body: " + commit_body)
+        print('Error: commit_body should not be empty. Will assume change is a PATCH')
+    else:
+        print("Commit Body: " + commit_body)
 
     
 

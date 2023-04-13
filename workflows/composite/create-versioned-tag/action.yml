@@ -28,8 +28,7 @@ runs:
       run: |
         cd ./origin
         git fetch
-        echo "TEST"
-        echo "commit_body=$(git log -1 --pretty=format:%b ${{github.sha}})" >> $GITHUB_OUTPUT  
+        echo 'commit_body=$("git log -1 --pretty=format:%b ${{github.sha}}")' >> $GITHUB_OUTPUT  
 
     - name: setup python
       uses: actions/setup-python@v2
@@ -38,13 +37,12 @@ runs:
       name: 'Checkout current Repo'
       with:
         token: ${{ inputs.github_token }}
-        ref: WS-2160
+        ref: WS-2160 # TODO: Change
         repository: wildsparq/.github
         path: 'gh'
 
     - name: run Jira integration script
       shell: bash
       run: |
-        echo $(ls -R)
         pip3 install semver
         python3 ./gh/workflows/scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
