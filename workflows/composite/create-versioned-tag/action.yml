@@ -16,6 +16,9 @@ runs:
       uses: rlespinasse/github-slug-action@v3.x
 
     - uses: actions/checkout@v2
+      name: 'Checkout current Repo'
+     
+    - uses: actions/checkout@v2
       name: 'Checkout Commit Origin Repo'
       with:
         token: ${{ inputs.github_token }}
@@ -34,16 +37,11 @@ runs:
     - name: setup python
       uses: actions/setup-python@v2
 
-    - uses: actions/checkout@v2
-      name: 'Checkout current Repo'
-      with:
-        token: ${{ inputs.github_token }}
-        repository: wildsparq/.github
-        path: '.github'
+   
 
     - name: run Jira integration script
       shell: bash
       run: |
-        cd ./github
+        cd ..
         pip3 install semver
         python3 ./scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
