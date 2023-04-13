@@ -14,7 +14,7 @@ runs:
   steps:
     - name: Inject slug/short variables
       uses: rlespinasse/github-slug-action@v3.x
-      
+
     - uses: actions/checkout@v2
       name: 'Checkout current Repo'
 
@@ -41,4 +41,4 @@ runs:
       shell: bash
       run: |
         pip3 install semver
-        python3 ./scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
+        python3 ./../scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.pre-release-complexity.outputs.complexity}}"
