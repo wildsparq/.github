@@ -16,7 +16,7 @@ runs:
       uses: rlespinasse/github-slug-action@v3.x
       
     - uses: actions/checkout@v2
-      name: 'Checkout Commit's Origin Repo'
+      name: 'Checkout Commit Origin Repo'
       with:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
