@@ -1,5 +1,5 @@
 ## Related Jira Ticket(s)
-_Paste links to all associated Jira tickets that your PR addresses (include a link to parent if applicable too)_
+https://wildsparq.atlassian.net/browse/WS-####
 
 ## Approach
 _How does this PR address the ticket?_
