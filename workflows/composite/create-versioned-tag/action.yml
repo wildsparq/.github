@@ -66,4 +66,4 @@ runs:
          tag: ${{steps.compute-version.outputs.version}}
          prerelease: true
          commit: ${{github.sha}}
-         token: ${{ secrets.GH_TOKEN }}
+         token: ${{ inputs.github_token }}
