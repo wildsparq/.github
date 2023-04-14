@@ -1,0 +1,66 @@
+name: "Create Versioned Tag"
+description: "Tag the current commit of a PR with its resulting version bump"
+
+inputs:
+  github_token:
+    description: 'A github token with admin access to the repository'
+    required: true
+
+outputs:
+  version:
+    description: 'The created version tag'
+    value: ${{steps.compute-version.outputs.version}}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
+
+    - uses: actions/checkout@v2
+      name: 'Checkout Commit Origin Repo'
+      with:
+        token: ${{ inputs.github_token }}
+        repository: ${{ env.GITHUB_REPOSITORY }}
+        path: 'origin'
+        ref: ${{ env.GITHUB_REF_SLUG_CS }}
+        fetch-depth: 0
+
+    - name: Get Git Data (Commit Body + Previous Version)
+      id: get-git-data
+      shell: bash
+      run: |
+        cd ./origin
+        echo $(git status)
+        git fetch --quiet
+        prev_tag=$(git describe --tags  --abbrev=0)
+        echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
+        body=$(git log -1 --pretty=format:%b ${{github.sha}})
+        echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
+
+
+    - name: setup python
+      uses: actions/setup-python@v2
+
+    - uses: actions/checkout@v2
+      name: 'Checkout current Repo'
+      with:
+        token: ${{ inputs.github_token }}
+        repository: wildsparq/.github
+        path: 'gh'
+
+    - name: Compute semver
+      shell: bash
+      id: compute-version
+      run: |
+        pip3 install semver
+        python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}}  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
+
+    - name: tag/pre-release
+      uses: ncipollo/release-action@v1
+      with:
+         tag: ${{steps.compute-version.outputs.version}}
+         prerelease: true
+         commit: ${{github.sha}}
+         token: ${{ inputs.github_token }}
+         allowUpdates: true
