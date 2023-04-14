@@ -12,7 +12,7 @@ inputs:
 outputs:
   version:
     description: 'The created version tag'
-    value: ${{ steps.compute_version.outputs.version }}
+    value: ${{steps.compute-version.outputs.version}}
 
 runs:
   using: "composite"
