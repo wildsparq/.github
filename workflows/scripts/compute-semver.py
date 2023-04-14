@@ -28,7 +28,7 @@ if (len(sys.argv) == 4):
     if (re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) != None):
         previous_version = "1.0.0"
 
-    ver = semver.Version.parse(previous_version)
+    ver = semver.Version.parse(semver.replace(str(previous_version), build=None))
 
     if (branch_name == 'main'):
         if (commit_body.find("[x] Major") != -1 or commit_body.find("[x ] Major") != -1 or commit_body.find("[ x] Major") != -1):
@@ -38,11 +38,11 @@ if (len(sys.argv) == 4):
         else:
             ver = ver.bump_patch()
     else: # note: Using prerelease instead of build parameter of semver due to lack of docker support for "+" in image name
-        build = ver.build
+        build = ver.prerelease
         if (build == None or build.find(branch_name+".") == -1):
-            ver = semver.replace(str(ver), build=branch_name+"."+str("1"))
+            ver = semver.replace(str(ver), prerelease=branch_name+"."+str("1"))
         else:
-            ver = ver.bump_build()
+            ver = ver.bump_prerelease()
 
     print(ver)
     print(f"::set-output name=version::" + str(ver))
