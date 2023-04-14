@@ -63,7 +63,7 @@ runs:
     - name: tag/pre-release
        uses: ncipollo/release-action@v1
        with:
-         tag: ${{steps.compute-version.outputs.version}}"
+         tag: ${{steps.compute-version.outputs.version}}
          prerelease: true
          commit: ${{github.sha}}
          token: ${{ secrets.GH_TOKEN }}
