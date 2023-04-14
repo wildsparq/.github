@@ -25,8 +25,8 @@ if (len(sys.argv) == 4):
 
     
 
-    if (re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", ver) != None):
-        ver = "1.0.0"
+    if (re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) != None):
+        previous_version = "1.0.0"
 
     ver = semver.Version.parse(previous_version)
 
