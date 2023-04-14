@@ -21,15 +21,19 @@ runs:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
         path: 'origin'
+        ref: ${{ env.GITHUB_REF_SLUG_CS }}
 
-    - name: Get Commit Body
-      id: get-commit-body
+    - name: Get Git Data (Commit Body + Previous Version)
+      id: get-git-data
       shell: bash
       run: |
         cd ./origin
         git fetch
         body=$(git log -1 --pretty=format:%b ${{github.sha}})
         echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
+        prev_tag=$(git describe --tags)
+        echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
+
     - name: setup python
       uses: actions/setup-python@v2
 
@@ -44,7 +48,5 @@ runs:
     - name: run Jira integration script
       shell: bash
       run: |
-        echo ${{steps.get-commit-body.outputs.commit_body}}
-        echo "!"
         pip3 install semver
-        python3 ./gh/workflows/scripts/compute-semver.py  1.0.0  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-commit-body.outputs.commit_body}}"
+        python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}}  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
