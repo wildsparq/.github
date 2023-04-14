@@ -9,6 +9,11 @@ inputs:
     description: 'A github token with admin access to the repository'
     required: true
 
+outputs:
+  version:
+    description: 'The created version tag'
+    value: ${{ steps.compute_version.outputs.version }}
+
 runs:
   using: "composite"
   steps:
@@ -48,8 +53,17 @@ runs:
         repository: wildsparq/.github
         path: 'gh'
 
-    - name: run Jira integration script
+    - name: Compute semver
       shell: bash
+      id: compute-version
       run: |
         pip3 install semver
         python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}}  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
+
+    - name: tag/pre-release
+       uses: ncipollo/release-action@v1
+       with:
+         tag: ${{steps.compute-version.outputs.version}}"
+         prerelease: true
+         commit: ${{github.sha}}
+         token: ${{ secrets.GH_TOKEN }}

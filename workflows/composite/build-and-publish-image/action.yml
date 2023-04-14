@@ -30,9 +30,10 @@ runs:
         repository: wildsparq/.github
         token: ${{ inputs.github_token }}
         path: .github 
-        ref: WS-2160
+        ref: WS-2160 # TODO: Remove
 
     - uses: ./.github/workflows/composite/create-versioned-tag
+      id: compute-version
       with:
         github_token: ${{inputs.github_token}}
 
