@@ -28,8 +28,7 @@ if (len(sys.argv) == 4):
     if (re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) != None):
         previous_version = "1.0.0"
 
-    ver = semver.Version.parse(previous_version)
-    ver = ver.replace(str(ver), build=None)
+    ver = semver.Version.parse(semver.replace(str(previous_version), build=None))
 
     if (branch_name == 'main'):
         if (commit_body.find("[x] Major") != -1 or commit_body.find("[x ] Major") != -1 or commit_body.find("[ x] Major") != -1):
