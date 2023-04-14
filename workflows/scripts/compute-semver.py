@@ -16,6 +16,7 @@ if (len(sys.argv) == 4):
         sys.exit(1)
 
     print("Branch Name: " + branch_name)
+    branch_name = "main"
 
     commit_body = sys.argv[3]
     if (commit_body == ''):
