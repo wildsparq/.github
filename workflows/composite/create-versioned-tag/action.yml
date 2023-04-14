@@ -61,9 +61,9 @@ runs:
         python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}}  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
 
     - name: tag/pre-release
-       uses: ncipollo/release-action@v1
-       with:
-         tag: "${{steps.compute-version.outputs.version}}"
+      uses: ncipollo/release-action@v1
+      with:
+         tag: ${{steps.compute-version.outputs.version}}
          prerelease: true
          commit: ${{github.sha}}
          token: ${{ secrets.GH_TOKEN }}
