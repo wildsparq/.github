@@ -28,11 +28,17 @@ runs:
       shell: bash
       run: |
         cd ./origin
-        git fetch
-        body=$(git log -1 --pretty=format:%b ${{github.sha}})
-        echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
+        git fetch --quiet
+        echo "!"
         prev_tag=$(git describe --tags)
+        echo "!"
         echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
+        echo "!"
+        body=$(git log -1 --pretty=format:%b ${{github.sha}})
+        echo "!"
+        echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
+        echo "!"
+
 
     - name: setup python
       uses: actions/setup-python@v2
