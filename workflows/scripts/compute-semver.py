@@ -37,7 +37,7 @@ if (len(sys.argv) == 4):
             ver = ver.bump_minor()
         else:
             ver = ver.bump_patch()
-    else: # note: Using prerelease instead of build parameter of semver due to docker support for 
+    else: # note: Using prerelease instead of build parameter of semver due to lack of docker support for "+" in image name
         build = ver.prerelease
         if (build == None or build.find(branch_name+".") == -1):
             ver = semver.replace(str(ver), prerelease=branch_name+"."+str("1"))
