@@ -31,15 +31,10 @@ runs:
         cd ./origin
         echo $(git status)
         git fetch --quiet
-        echo "!"
         prev_tag=$(git describe --tags  --abbrev=0)
-        echo "!"
         echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
-        echo "!"
         body=$(git log -1 --pretty=format:%b ${{github.sha}})
-        echo "!"
         echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
-        echo "!"
 
 
     - name: setup python
