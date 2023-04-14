@@ -26,7 +26,7 @@ runs:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
         path: 'origin'
-        ref: ${{github.sha}})
+        ref: ${{ env.GITHUB_REF_SLUG_CS }}
         fetch-depth: 0
 
     - name: Get Git Data (Commit Body + Previous Version)
