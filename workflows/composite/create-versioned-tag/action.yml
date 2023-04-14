@@ -67,3 +67,4 @@ runs:
          prerelease: true
          commit: ${{github.sha}}
          token: ${{ inputs.github_token }}
+         allowUpdates: true
