@@ -28,9 +28,10 @@ runs:
       shell: bash
       run: |
         cd ./origin
+        echo $(git status)
         git fetch --quiet
         echo "!"
-        prev_tag=$(git describe --tags)
+        prev_tag=$(git describe --tags  --abbrev=0)
         echo "!"
         echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
         echo "!"
