@@ -29,6 +29,7 @@ if (len(sys.argv) == 4):
         previous_version = "1.0.0"
 
     ver = semver.Version.parse(previous_version)
+    ver = ver.replace(str(ver), build=None)
 
     if (branch_name == 'main'):
         if (commit_body.find("[x] Major") != -1 or commit_body.find("[x ] Major") != -1 or commit_body.find("[ x] Major") != -1):
