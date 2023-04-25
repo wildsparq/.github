@@ -36,7 +36,7 @@ runs:
         # push it to ECR so that it can
         # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/$REPO_NAME
-        docker build -e TZ=America/Chicago -f $DOCKER_FILE -t $IMAGE_NAME .
+        docker build --build-arg TZ=America/Chicago -f $DOCKER_FILE -t $IMAGE_NAME .
         docker push $IMAGE_NAME
         echo "::set-output name=image::$IMAGE_NAME"
 
