@@ -35,6 +35,8 @@ runs:
         git fetch --quiet
         prev_tag=$(git describe --tags  --abbrev=0)
         echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
+        prev_tag_matching_branch=$(git describe --tags  --abbrev=0 --match "*${{env.GITHUB_REF_SLUG}}*" || echo "0.0.0-${{env.GITHUB_REF_SLUG}}")
+        echo "prev_tag_matching_branch=$(echo $prev_tag_matching_branch)" >> $GITHUB_OUTPUT
         body=$(git log -1 --pretty=format:%b ${{github.sha}})
         echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
 
@@ -54,7 +56,7 @@ runs:
       id: compute-version
       run: |
         pip3 install semver
-        python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}}  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
+        python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}} "${{steps.get-git-data.outputs.prev_tag_matching_branch}}"  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
 
     - name: tag/pre-release
       uses: ncipollo/release-action@v1
