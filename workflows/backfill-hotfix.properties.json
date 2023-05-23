@@ -1,0 +1,4 @@
+{
+    "name": "Backfill Main from Hotfix",
+    "description": "After a hotfix change has been submitted, merge the commit into the main branch.",    
+}
