@@ -1,0 +1,26 @@
+name: Backfill Main From Hotfix
+   
+on:
+  push:
+    branches: [ "hotfix" ]
+
+
+jobs:
+  backfill:
+    timeout-minutes: 3
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.GH_TOKEN }} 
+        
+    - name: Merge hotfix back to main
+      run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git fetch --unshallow
+          git checkout main
+          git pull
+          git merge --no-ff hotfix -m "Auto-merge hotfix back to main"
+          git push
