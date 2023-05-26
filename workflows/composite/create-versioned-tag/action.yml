@@ -33,7 +33,7 @@ runs:
         cd ./origin
         echo $(git status)
         git fetch --quiet
-        prev_tag=$(git describe --tags  --abbrev=0)
+        prev_tag=$(git describe --tags  --abbrev=0 --first-parent || echo "1.0.0")
         echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
         prev_tag_matching_branch=$(git describe --tags  --abbrev=0 --match "*${{env.GITHUB_REF_SLUG}}*" || echo "0.0.0-${{env.GITHUB_REF_SLUG}}")
         echo "prev_tag_matching_branch=$(echo $prev_tag_matching_branch)" >> $GITHUB_OUTPUT
