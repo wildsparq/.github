@@ -41,8 +41,10 @@ runs:
         echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
 
 
-    - name: setup python
-      uses: actions/setup-python@v2
+    - name: Setup Python
+      run: |
+        sudo apt-get update
+        sudo apt-get install python3.6
 
     - uses: actions/checkout@v2
       name: 'Checkout current Repo'
