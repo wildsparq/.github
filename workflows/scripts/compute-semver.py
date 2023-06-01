@@ -7,7 +7,7 @@ import re
 print("received args:")
 print(sys.argv)
 
-if (len(sys.argv) == 5):
+if (len(sys.argv) >= 5):
     previous_version = sys.argv[1]
     if (previous_version == None or re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) != None):
         previous_version = '1.0.0'
@@ -27,7 +27,7 @@ if (len(sys.argv) == 5):
 
     print("Branch Name: " + branch_name)
 
-    commit_body = sys.argv[4]
+    commit_body = " ".join(sys.argv[4:])
     if (commit_body == ''):
         print('Error: commit_body should not be empty. Will assume change is a PATCH')
     else:
