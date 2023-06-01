@@ -57,9 +57,14 @@ runs:
     - name: Compute semver
       shell: bash
       id: compute-version
+      env:
+        PREV_TAG: ${{ steps.get-git-data.outputs.prev_tag }}
+        MATCHING_BRANCH_PREV_TAG: ${{ steps.get-git-data.outputs.prev_tag_matching_branch }}
+        COMMIT_BODY: ${{steps.get-git-data.outputs.commit_body}}
+        BRANCH: ${{ env.GITHUB_REF_SLUG }}
       run: |
         pip3 install semver
-        python3 ./gh/workflows/scripts/compute-semver.py  ${{steps.get-git-data.outputs.prev_tag}} "${{steps.get-git-data.outputs.prev_tag_matching_branch}}"  ${{ env.GITHUB_REF_SLUG }} "${{steps.get-git-data.outputs.commit_body}}"
+        python3 ./gh/workflows/scripts/compute-semver.py $PREV_TAG $MATCHING_BRANCH_PREV_TAG $BRANCH $COMMIT_BODY
 
     - name: tag/pre-release
       uses: ncipollo/release-action@v1
