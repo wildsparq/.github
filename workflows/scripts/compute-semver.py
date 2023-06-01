@@ -4,6 +4,9 @@ from datetime import datetime
 import semver
 import re
 
+print("received args:")
+print(sys.argv)
+
 if (len(sys.argv) == 5):
     previous_version = sys.argv[1]
     if (previous_version == None or re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) != None):
