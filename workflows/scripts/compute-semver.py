@@ -60,6 +60,6 @@ if (len(sys.argv) == 5):
     print(f"::set-output name=version::" + str(ver))
 
 else: 
-    fatal('Error: compute-semver.py requires 3 arguments to be passed (previous_version, branch_name, commit_body)')
+    fatal('Error: compute-semver.py requires 4 arguments to be passed (previous_version (baseline), previous_version (branch specific), branch_name, commit_body)')
     sys.exit(1)
 
