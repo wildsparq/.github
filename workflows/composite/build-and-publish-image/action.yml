@@ -20,6 +20,10 @@ inputs:
   github_token:
     required: true
     description: 'The admin github token'
+  image_architecture:
+    required: false
+    default: 'linux/amd64'
+    description: 'The admin github token'
 
 runs:
   using: "composite"
@@ -35,7 +39,7 @@ runs:
         # push it to ECR so that it can
         # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
-        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=linux/arm64 .
+        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} .
         docker push $IMAGE_NAME
         echo "::set-output name=image::$IMAGE_NAME"
 
