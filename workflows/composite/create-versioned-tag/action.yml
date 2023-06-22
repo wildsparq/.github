@@ -36,7 +36,7 @@ runs:
     - name: Get Git Data (Commit Body + Previous Version)
       id: get-git-data
       shell: bash
-      if: ${{steps.return.outputs.tag_to_use != '' }}
+      if: ${{steps.return.outputs.tag_to_use == '' }}
       run: |
         cd ./origin
         echo $(git status)
@@ -51,14 +51,14 @@ runs:
 
     - name: Setup Python
       shell: bash
-      if: ${{steps.return.outputs.tag_to_use != '' }}
+      if: ${{steps.return.outputs.tag_to_use == '' }}
       run: |
         sudo apt-get update
         sudo apt-get install python3.6
 
     - uses: actions/checkout@v2
       name: 'Checkout current Repo'
-      if: ${{steps.return.outputs.tag_to_use != '' }}
+      if: ${{steps.return.outputs.tag_to_use == '' }}
       with:
         token: ${{ inputs.github_token }}
         repository: wildsparq/.github
@@ -66,7 +66,7 @@ runs:
 
     - name: Compute semver
       shell: bash
-      if: ${{steps.return.outputs.tag_to_use != '' }}
+      if: ${{steps.return.outputs.tag_to_use == '' }}
       id: compute-version
       env:
         PREV_TAG: ${{ steps.get-git-data.outputs.prev_tag }}
@@ -78,7 +78,7 @@ runs:
 
     - name: tag/pre-release
       uses: ncipollo/release-action@v1
-      if: ${{steps.return.outputs.tag_to_use != '' }}
+      if: ${{steps.return.outputs.tag_to_use == '' }}
       with:
          tag: ${{steps.compute-version.outputs.version}}
          prerelease: true
