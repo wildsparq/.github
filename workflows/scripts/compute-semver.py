@@ -57,7 +57,7 @@ if (len(sys.argv) >= 4):
             ver = semver.replace(str(ver), prerelease=branch_name+"."+str("0"))
 
     print(ver)
-    print(f"::set-output name=version::" + str(ver))
+    print(f"::set-output name=version_created::" + str(ver))
 
 else: 
     fatal('Error: compute-semver.py requires 4 arguments to be passed (previous_version (baseline), previous_version (branch specific), branch_name, commit_body)')
