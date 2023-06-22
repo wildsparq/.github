@@ -93,8 +93,8 @@ runs:
       run: |
         if [ -z "${{steps.existing-tag.outputs.existing_tag}}" ]
           then
-            echo "tag_to_use=${{steps.existing-tag.outputs.existing_tag}}" >> $GITHUB_OUTPUT
-          else
             echo "tag_to_use=${{steps.compute-version.outputs.version_created}}" >> $GITHUB_OUTPUT
+          else
+            echo "tag_to_use=${{steps.existing-tag.outputs.existing_tag}}" >> $GITHUB_OUTPUT
         fi
 
