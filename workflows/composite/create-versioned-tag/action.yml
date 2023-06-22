@@ -30,7 +30,7 @@ runs:
       id: existing-tag
       shell: bash
       run: |
-        echo "existing_tag=123" >> $GITHUB_OUTPUT
+        echo "existing_tag=$(git tag --points-at ${{env.GITHUB_SHA}}   | head -n 1)" >> $GITHUB_OUTPUT
 
 
     - name: Get Git Data (Commit Body + Previous Version)
@@ -90,7 +90,6 @@ runs:
       id: return
       shell: bash
       run: |
-        
         if [ -z "${{steps.existing-tag.outputs.existing_tag}}" ]
           then
             echo "tag_to_use=${{steps.existing-tag.outputs.existing_tag}}" >> $GITHUB_OUTPUT
