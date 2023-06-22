@@ -30,6 +30,7 @@ runs:
       id: existing-tag
       shell: bash
       run: |
+        cd ./origin
         echo "existing_tag='$(git tag --points-at ${{github.sha}}  --sort=-version:refname  | head -n 1 | xargs)'" >> $GITHUB_OUTPUT
 
 
