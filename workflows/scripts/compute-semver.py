@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 import semver
 import re
+import github_action_utils as gha_utils
 
 print("received args:")
 print(sys.argv)
@@ -57,7 +58,8 @@ if (len(sys.argv) >= 4):
             ver = semver.replace(str(ver), prerelease=branch_name+"."+str("0"))
 
     print(ver)
-    print(f"::set-output name=version::" + str(ver))
+    gha_utils.set_output("version", str(ver))
+
 
 else: 
     fatal('Error: compute-semver.py requires 4 arguments to be passed (previous_version (baseline), previous_version (branch specific), branch_name, commit_body)')

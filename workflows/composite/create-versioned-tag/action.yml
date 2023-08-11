@@ -9,7 +9,7 @@ inputs:
 outputs:
   version:
     description: 'The created version tag'
-    value: ${{steps.compute-version.outputs.version}}
+    value: ${{steps.return.outputs.tag_to_use}}
 
 runs:
   using: "composite"
@@ -26,9 +26,19 @@ runs:
         ref: ${{ env.GITHUB_REF_SLUG_CS }}
         fetch-depth: 0
 
+    - name: Check for existing tag
+      id: existing-tag
+      shell: bash
+      run: |
+        cd ./origin
+        existing_tag=$(git tag --points-at ${{github.sha}}  --sort=-version:refname  | head -n 1 | xargs)
+        echo "existing_tag=$(echo $existing_tag)" >> $GITHUB_OUTPUT
+
+
     - name: Get Git Data (Commit Body + Previous Version)
       id: get-git-data
       shell: bash
+      if: ${{steps.existing-tag.outputs.existing_tag == '' }}
       run: |
         cd ./origin
         echo $(git status)
@@ -43,12 +53,14 @@ runs:
 
     - name: Setup Python
       shell: bash
+      if: ${{steps.existing-tag.outputs.existing_tag == '' }}
       run: |
         sudo apt-get update
         sudo apt-get install python3.6
 
     - uses: actions/checkout@v2
       name: 'Checkout current Repo'
+      if: ${{steps.existing-tag.outputs.existing_tag == '' }}
       with:
         token: ${{ inputs.github_token }}
         repository: wildsparq/.github
@@ -56,6 +68,7 @@ runs:
 
     - name: Compute semver
       shell: bash
+      if: ${{steps.existing-tag.outputs.existing_tag == '' }}
       id: compute-version
       env:
         PREV_TAG: ${{ steps.get-git-data.outputs.prev_tag }}
@@ -63,13 +76,28 @@ runs:
         COMMIT_BODY: ${{steps.get-git-data.outputs.commit_body}}
       run: |
         pip3 install semver
+        pip3 install github-action-utils
         python3 ./gh/workflows/scripts/compute-semver.py $PREV_TAG $MATCHING_BRANCH_PREV_TAG "${{ env.GITHUB_REF_SLUG }}" $COMMIT_BODY
 
     - name: tag/pre-release
       uses: ncipollo/release-action@v1
+      if: ${{steps.existing-tag.outputs.existing_tag == '' }}
       with:
          tag: ${{steps.compute-version.outputs.version}}
          prerelease: true
          commit: ${{github.sha}}
          token: ${{ inputs.github_token }}
          allowUpdates: true
+
+    - name: return value
+      id: return
+      shell: bash
+      if: always()
+      run: |
+        if [ -z "${{steps.existing-tag.outputs.existing_tag}}" ]
+          then
+            echo "tag_to_use=${{steps.compute-version.outputs.version}}" >> $GITHUB_OUTPUT
+          else
+            echo "tag_to_use=${{steps.existing-tag.outputs.existing_tag}}" >> $GITHUB_OUTPUT
+        fi
+
