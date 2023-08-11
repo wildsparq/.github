@@ -76,6 +76,7 @@ runs:
         COMMIT_BODY: ${{steps.get-git-data.outputs.commit_body}}
       run: |
         pip3 install semver
+        pip3 install github-action-utils
         python3 ./gh/workflows/scripts/compute-semver.py $PREV_TAG $MATCHING_BRANCH_PREV_TAG "${{ env.GITHUB_REF_SLUG }}" $COMMIT_BODY
 
     - name: tag/pre-release
@@ -95,7 +96,7 @@ runs:
       run: |
         if [ -z "${{steps.existing-tag.outputs.existing_tag}}" ]
           then
-            echo "tag_to_use=${{steps.compute-version.outputs.version_created}}" >> $GITHUB_OUTPUT
+            echo "tag_to_use=${{steps.compute-version.outputs.version}}" >> $GITHUB_OUTPUT
           else
             echo "tag_to_use=${{steps.existing-tag.outputs.existing_tag}}" >> $GITHUB_OUTPUT
         fi

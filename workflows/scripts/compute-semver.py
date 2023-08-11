@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 import semver
 import re
-import os
+import github_action_utils as gha_utils
 
 print("received args:")
 print(sys.argv)
@@ -58,8 +58,7 @@ if (len(sys.argv) >= 4):
             ver = semver.replace(str(ver), prerelease=branch_name+"."+str("0"))
 
     print(ver)
-    with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-        print(f'version_created={str(ver)}', file=fh)
+    gha_utils.set_output("version", str(ver))
 
 
 else: 
