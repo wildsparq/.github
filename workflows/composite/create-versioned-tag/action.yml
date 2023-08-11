@@ -31,7 +31,8 @@ runs:
       shell: bash
       run: |
         cd ./origin
-        echo "existing_tag='$(git tag --points-at ${{github.sha}}  --sort=-version:refname  | head -n 1 | xargs)'" >> $GITHUB_OUTPUT
+        existing_tag=$(git tag --points-at ${{github.sha}}  --sort=-version:refname  | head -n 1 | xargs)
+        echo "existing_tag=$(echo $existing_tag)" >> $GITHUB_OUTPUT
 
 
     - name: Get Git Data (Commit Body + Previous Version)
@@ -90,6 +91,7 @@ runs:
     - name: return value
       id: return
       shell: bash
+      if: always()
       run: |
         if [ -z "${{steps.existing-tag.outputs.existing_tag}}" ]
           then
