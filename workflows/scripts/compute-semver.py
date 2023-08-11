@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 import semver
 import re
+import os
 
 print("received args:")
 print(sys.argv)
@@ -57,7 +58,9 @@ if (len(sys.argv) >= 4):
             ver = semver.replace(str(ver), prerelease=branch_name+"."+str("0"))
 
     print(ver)
-    print(f"::set-output name=version_created::" + str(ver))
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+        print(f'version_created={str(ver)}', file=fh)
+
 
 else: 
     fatal('Error: compute-semver.py requires 4 arguments to be passed (previous_version (baseline), previous_version (branch specific), branch_name, commit_body)')
