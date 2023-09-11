@@ -38,9 +38,10 @@ runs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
+        export DOCKER_CLI_EXPERIMENTAL=enabled
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
-        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} .
-        docker push $IMAGE_NAME
+        docker buildx create --name wsq-image-builder --bootstrap --use
+        docker buildx build --platform linux/amd64,linux/arm64 -f $DOCKER_FILE  -t $IMAGE_NAME --push .
         echo "::set-output name=image::$IMAGE_NAME"
 
     - name: Get other actions
