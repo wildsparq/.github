@@ -42,9 +42,8 @@ runs:
         # push it to ECR so that it can
         # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
-        ARGS=--build-arg=${{inputs.build_args}}
-        ARGS=$(( ${{ inputs.build_args }} != "" ? "--build-arg=${{inputs.build_args}}" : "" ))
-        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} $ARGS .
+        ARGS_OPT=[ -z "${{inputs.build_args}}" ] %% echo "" || echo "--build-arg=${{inputs.build_args}}"
+        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} $ARGS_OPT .
         docker push $IMAGE_NAME
         echo "::set-output name=image::$IMAGE_NAME"
 
