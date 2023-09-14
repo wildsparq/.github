@@ -24,9 +24,9 @@ inputs:
     required: false
     default: 'linux/amd64'
     description: 'The architectures for which to build the images'
-  build_args:
+  build_options:
     required: false
-    description: "Additional arguments for the docker build"
+    description: "Additional options for the docker build"
 
 runs:
   using: "composite"
@@ -42,8 +42,7 @@ runs:
         # push it to ECR so that it can
         # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
-        ARGS_OPT=$([[ "${{inputs.build_args}}" == "" ]] && echo "" || echo "--build-arg="${{inputs.build_args}}"")
-        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} $ARGS_OPT .
+        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} ${{inputs.build_options}} .
         docker push $IMAGE_NAME
         echo "::set-output name=image::$IMAGE_NAME"
 
