@@ -23,7 +23,7 @@ runs:
       with:
         token: ${{ inputs.github_token }}
         repository: 'wildsparq/wildsparq-infrastructure'
-        ref: WS-2678-test
+        ref: pending-${{ env.GITHUB_REF_SLUG }}
         path: './infra'
 
     - name: Write value to Infrastructure Properties-file
@@ -41,4 +41,4 @@ runs:
         git config --local user.name "Github Actions"
         git add .aws/cdk/image.properties
         git commit -m "update ${{inputs.image_property_name}}"
-        git push origin WS-2678-test
+        git push origin ${{inputs.target_branch}}
