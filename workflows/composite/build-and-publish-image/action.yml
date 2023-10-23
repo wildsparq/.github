@@ -55,8 +55,7 @@ runs:
         path: .github
 
     - uses: ./.github/workflows/composite/set-infrastructure-image-property
-      #if: success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix') && (${{inputs.image_architecture}} == 'linux/arm64')
-      if: ${{ success() && (inputs.image_architecture == 'linux/arm64') }}
+      if: ${{ success() && (inputs.image_architecture == 'linux/arm64') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix') }}
       with:
         image_property_name: ${{inputs.image_property_name}}
         github_token: ${{inputs.github_token}}
