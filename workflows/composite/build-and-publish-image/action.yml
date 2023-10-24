@@ -29,7 +29,7 @@ inputs:
     description: "Additional options for the docker build"
   set_image_property:
     required: false
-    default: true
+    default: 'true'
     description: "Whether to update the corresponding image tag in pending-man/pending-hotfix image.properties"
 
 runs:
@@ -59,8 +59,8 @@ runs:
         path: .github
 
     - uses: ./.github/workflows/composite/set-infrastructure-image-property
-      #if: ${{ success() && (inputs.set_image_property == true) && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix') }}
-      if: ${{ success() && inputs.set_image_property }}
+      #if: ${{ success() && ( inputs.set_image_property == 'true' ) && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix') }}
+      if: ${{ success() && ( inputs.set_image_property == 'true' ) }}
       with:
         image_property_name: ${{inputs.image_property_name}}
         github_token: ${{inputs.github_token}}
