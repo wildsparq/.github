@@ -75,8 +75,8 @@ runs:
         MATCHING_BRANCH_PREV_TAG: ${{ steps.get-git-data.outputs.prev_tag_matching_branch }}
         COMMIT_BODY: ${{steps.get-git-data.outputs.commit_body}}
       run: |
-        pip3 install semver
-        pip3 install github-action-utils
+        pip3 install semver --break-system-packages
+        pip3 install github-action-utils --break-system-packages
         python3 ./gh/workflows/scripts/compute-semver.py $PREV_TAG $MATCHING_BRANCH_PREV_TAG "${{ env.GITHUB_REF_SLUG }}" $COMMIT_BODY
 
     - name: tag/pre-release
