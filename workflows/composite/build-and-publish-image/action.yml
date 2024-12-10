@@ -1,7 +1,10 @@
-name: "Build And Publish Image"
-description: "Build and publish Image to an ECR Repository"
+name: "Build Image"
+description: "Build Image, and optionally push to an ECR Repository"
 
 inputs:
+  push_to_ECR: 
+    description: 'If false, will only build image and not push it'
+    default: true
   repository_name:
     description: 'The name of the ECR repository to upload image to'
     required: true
@@ -47,10 +50,13 @@ runs:
         # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
         docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} ${{inputs.build_options}} .
-        docker push $IMAGE_NAME
+        if [ "${{ inputs.run-push_to_ECR   }}" = "true" ]; then
+          docker push $IMAGE_NAME
+        fi
         echo "::set-output name=image::$IMAGE_NAME"
 
     - name: Get other actions
+      if: ${{ success() && ( inputs.set_image_property == 'true' ) && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hotfix') }}
       uses: actions/checkout@v2
       with:
         repository: wildsparq/.github
