@@ -2,9 +2,6 @@ name: "Build Image"
 description: "Build Image, and optionally push to an ECR Repository"
 
 inputs:
-  push_to_ECR: 
-    description: 'If false, will only build image and not push it'
-    default: true
   repository_name:
     description: 'The name of the ECR repository to upload image to'
     required: true
@@ -34,7 +31,10 @@ inputs:
     required: false
     default: 'true'
     description: "Whether to update the corresponding image tag in pending-man/pending-hotfix image.properties"
-
+  push_to_ECR: 
+    required: false
+    description: 'If false, will only build image and not push it'
+    default: 'true'
 runs:
   using: "composite"
   steps:
