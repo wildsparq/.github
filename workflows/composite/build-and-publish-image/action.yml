@@ -50,7 +50,7 @@ runs:
         # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
         docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} ${{inputs.build_options}} .
-        if [ "${{ inputs.run-push_to_ECR   }}" = "true" ]; then
+        if [ "${{ inputs.push_to_ECR   }}" = "true" ]; then
           docker push $IMAGE_NAME
         fi
         echo "::set-output name=image::$IMAGE_NAME"
