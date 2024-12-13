@@ -23,7 +23,7 @@ inputs:
 outputs:
   instance_id:
     description: 'The id of the running EC2 instance'
-    value: ${{steps.startInstance.outputs.instanceId}}
+    value: ${{steps.startInstance.outputs.instance_id}}
 
 runs:
   using: "composite"
