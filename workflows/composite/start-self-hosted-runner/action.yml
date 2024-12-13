@@ -17,6 +17,8 @@ inputs:
     required: true
   subnet_id: 
     description: 'The AWS subnet id to run the instance in'
+    required: true
+
 
 outputs:
   instance_id:
@@ -38,5 +40,5 @@ runs:
       id: startInstance
       shell: bash
       run: |
-        instanceId=$(aws ec2 run-instances --launch-template LaunchTemplateName="${{inputs.launch_template}}",Version="\$Latest" --subnet-id ${{subnet_id}} | jq -r .Instances[0].InstanceId)
+        instanceId=$(aws ec2 run-instances --launch-template LaunchTemplateName="${{inputs.launch_template}}",Version="\$Latest" --subnet-id ${{inputs.subnet_id}} | jq -r .Instances[0].InstanceId)
         echo "instanceId=$instanceId" >> $GITHUB_OUTPUT
