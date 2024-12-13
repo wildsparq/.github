@@ -28,5 +28,4 @@ runs:
 
     - name: Stop EC2 Instance
       shell: bash
-      run: |
-        aws ec2 terminate-instances --instance-ids ${{needs.start-runner.outputs.instanceId}}
+      run: aws ec2 terminate-instances --instance-ids ${{inputs.instanceId}}
