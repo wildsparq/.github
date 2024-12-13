@@ -41,4 +41,5 @@ runs:
       shell: bash
       run: |
         instanceId=$(aws ec2 run-instances --launch-template LaunchTemplateName="${{inputs.launch_template}}",Version="\$Latest" --subnet-id ${{inputs.subnet_id}} | jq -r .Instances[0].InstanceId)
+        echo $instanceId
         echo "instanceId=$instanceId" >> $GITHUB_OUTPUT
