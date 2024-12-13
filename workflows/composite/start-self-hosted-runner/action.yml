@@ -34,9 +34,9 @@ runs:
         role-session-name: ${{inputs.session_name}}
         aws-region:  ${{inputs.aws_region}}
 
-  - name: Start EC2 Instance
-    id: startInstance
-    shell: bash
-    run: |
-      instanceId=$(aws ec2 run-instances --launch-template LaunchTemplateName="${{inputs.launch_template}}",Version="\$Latest" --subnet-id ${{subnet_id}} | jq -r .Instances[0].InstanceId)
-      echo "instanceId=$instanceId" >> $GITHUB_OUTPUT
+    - name: Start EC2 Instance
+      id: startInstance
+      shell: bash
+      run: |
+        instanceId=$(aws ec2 run-instances --launch-template LaunchTemplateName="${{inputs.launch_template}}",Version="\$Latest" --subnet-id ${{subnet_id}} | jq -r .Instances[0].InstanceId)
+        echo "instanceId=$instanceId" >> $GITHUB_OUTPUT
