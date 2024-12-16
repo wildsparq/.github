@@ -1,0 +1,44 @@
+# Note: This action needs to be run on a github-hosted runner, not the self-hosted runner that it starts-up.
+
+name: "Start self-hosted runner"
+
+inputs:
+  role_arn:
+    description: 'The AWS role to assume'
+    required: true
+  session_name: 
+    description: 'The name of the runner session to use'
+    required: true
+  aws_region:
+    description: 'The AWS region to use'
+    required: true
+  launch_template:
+    description: 'The name of the pre-set AWS EC2 Launch template to use'
+    required: true
+  subnet_id: 
+    description: 'The AWS subnet id to run the instance in'
+    required: true
+
+
+outputs:
+  instance_id:
+    description: 'The id of the running EC2 instance'
+    value: ${{steps.startInstance.outputs.instance_id}}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{inputs.role_arn}}
+        role-session-name: ${{inputs.session_name}}
+        aws-region:  ${{inputs.aws_region}}
+
+    - name: Start EC2 Instance
+      id: startInstance
+      shell: bash
+      run: |
+        instanceId=$(aws ec2 run-instances --launch-template LaunchTemplateName="${{inputs.launch_template}}",Version="\$Latest" --subnet-id ${{inputs.subnet_id}} | jq -r .Instances[0].InstanceId)
+        echo $instanceId
+        echo "instance_id=$instanceId" >> $GITHUB_OUTPUT
