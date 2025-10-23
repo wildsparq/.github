@@ -1,0 +1,23 @@
+name: 'Slack Notification'
+description: 'Sends a slack notification to the given channel'
+
+inputs:
+  CHANNEL_ID:
+    required: true
+  BOT_TOKEN:
+    required: true
+  message:
+    description: "The message that should be sent"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send Slack Message
+      uses: slackapi/slack-github-action@v2.1.1
+      with: 
+        method: chat.postMessage
+        token : ${{ inputs.BOT_TOKEN }}
+        payload: |
+           channel : ${{ inputs.CHANNEL_ID }}
+           text : ${{ inputs.message }}
