@@ -53,6 +53,8 @@ runs:
 
     - name: Process PR branches
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
       run: |
         echo '${{ steps.prs.outputs.result }}' > prs.json
         FAILED=""
