@@ -92,13 +92,6 @@ runs:
         echo -e "$FAILED_DETAILS" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 
-    - uses: actions/checkout@v2
-      name: 'Checkout shared repo'
-      with:
-        token: ${{ inputs.github-token }}
-        repository: wildsparq/.github
-        path: 'gh'
-
     - name: Send Slack Notification
       if: env.FAILED_PRS != ''
       uses: wildsparq/.github/workflows/composite/slack-notify@main
