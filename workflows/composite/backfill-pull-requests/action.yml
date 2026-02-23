@@ -27,6 +27,12 @@ runs:
         ref: ${{ env.GITHUB_REF_SLUG_CS }}
         fetch-depth: 0
 
+    - name: Navigate to checked-out repo
+      shell: bash
+      run: |
+        cd ./origin
+        echo $(ls)
+
     - name: Configure Git
       shell: bash
       run: |
@@ -39,8 +45,6 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          cd ./origin
-          echo $(ls)
           const { data: pulls } = await github.rest.pulls.list({
             owner: context.repo.owner,
             repo: context.repo.repo,
