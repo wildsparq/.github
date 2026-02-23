@@ -6,9 +6,6 @@ inputs:
     description: Branch PRs are targeting
     required: true
 
-  slack-channel-id:
-    required: true
-
   slack-bot-token:
     required: true
 
@@ -96,7 +93,7 @@ runs:
       if: env.FAILED_PRS != ''
       uses: wildsparq/.github/workflows/composite/slack-notify@main
       with:
-        CHANNEL_ID: ${{ inputs.slack-channel-id }}
+        CHANNEL_ID: C04L019C0M6 # PR Channel
         BOT_TOKEN: ${{ inputs.slack-bot-token }}
         message: |
           ⚠️ Backfill conflicts in ${{ github.repository }} for PRs:
