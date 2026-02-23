@@ -1,0 +1,116 @@
+# Action generated via AI and manually reviewed/corrected by devs
+name: Backfill PR Branches
+
+on:
+  workflow_call:
+    inputs:
+      base-branch:
+        description: "Branch PRs are targeting"
+        required: true
+        type: string
+    secrets:
+      github-token:
+        required: true
+      slack-bot-token:
+        required: true
+      slack-channel-id:
+        required: true
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.github-token }}
+
+      - name: Configure git
+        run: |
+          git config user.name "automation-bot"
+          git config user.email "automation@yourcompany.com"
+
+      - name: Fetch open PRs targeting base branch
+        id: prs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.github-token }}
+          script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              base: "${{ inputs.base-branch }}"
+            });
+
+            return pulls.map(pr => ({
+              number: pr.number,
+              branch: pr.head.ref,
+              isFork: pr.head.repo.full_name !== `${context.repo.owner}/${context.repo.repo}`,
+              url: pr.html_url
+            }));
+
+      - name: Process PR branches
+        id: process
+        run: |
+          echo '${{ steps.prs.outputs.result }}' > prs.json
+
+          FAILED=""
+          FAILED_DETAILS=""
+
+          for row in $(jq -c '.[]' prs.json); do
+            number=$(echo $row | jq -r '.number')
+            branch=$(echo $row | jq -r '.branch')
+            isFork=$(echo $row | jq -r '.isFork')
+            url=$(echo $row | jq -r '.url')
+
+            echo "Processing PR #$number ($branch)"
+
+            if [ "$isFork" = "true" ]; then
+              echo "Skipping forked PR #$number"
+              continue
+            fi
+
+            git fetch origin $branch
+            git checkout $branch
+
+            if git merge origin/${{ inputs.base-branch }} --no-edit; then
+              git push origin $branch
+            else
+              git merge --abort
+              FAILED="$FAILED #$number"
+              FAILED_DETAILS="$FAILED_DETAILS\n• PR #$number → $url"
+
+              gh api \
+                repos/${{ github.repository }}/issues/$number/comments \
+                -f body="⚠️ Automatic backfill from '${{ inputs.base-branch }}' failed due to merge conflicts. Please merge manually." \
+                -H "Authorization: token ${{ secrets.github-token }}"
+            fi
+          done
+
+          echo "FAILED_PRS=$FAILED" >> $GITHUB_ENV
+          echo "FAILED_DETAILS<<EOF" >> $GITHUB_ENV
+          echo -e "$FAILED_DETAILS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.github-token }}
+
+      - name: Send Slack Notification
+        if: env.FAILED_PRS != ''
+        uses: your-org/.github/actions/slack-notify@main
+        with:
+          CHANNEL_ID: ${{ secrets.slack-channel-id }}
+          BOT_TOKEN: ${{ secrets.slack-bot-token }}
+          message: |
+            ⚠️ Backfill conflicts detected in ${{ github.repository }}
+            Base branch: ${{ inputs.base-branch }}
+
+            The following PRs require manual merge:
+
+            ${{ env.FAILED_DETAILS }}
