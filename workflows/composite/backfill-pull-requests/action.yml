@@ -18,15 +18,19 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v2
+      name: 'Checkout Commit Origin Repo'
       with:
-        fetch-depth: 0
         token: ${{ inputs.github-token }}
+        repository: ${{ env.GITHUB_REPOSITORY }}
+        path: 'origin'
+        ref: ${{ env.GITHUB_REF_SLUG_CS }}
+        fetch-depth: 0
 
     - name: Configure Git
       shell: bash
       run: |
+        cd ./origin
         git config user.name "automation-bot"
         git config user.email "automation@yourcompany.com"
 
@@ -88,9 +92,16 @@ runs:
         echo -e "$FAILED_DETAILS" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 
+    - uses: actions/checkout@v2
+      name: 'Checkout current Repo'
+      with:
+        token: ${{ inputs.github-token }}
+        repository: wildsparq/.github
+        path: 'gh'
+
     - name: Send Slack Notification
       if: env.FAILED_PRS != ''
-      uses: wildsparq/.github/actions/slack-notify@main
+      uses: ./.github/workflows/composite/slack-notify
       with:
         CHANNEL_ID: ${{ inputs.slack-channel-id }}
         BOT_TOKEN: ${{ inputs.slack-bot-token }}
