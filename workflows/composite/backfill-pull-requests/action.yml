@@ -30,6 +30,8 @@ runs:
     - name: Configure Git
       shell: bash
       run: |
+        cd ./origin
+        echo $(ls)
         git config --local user.email "actions@github.com"
         git config --local user.name "Github Actions"
 
