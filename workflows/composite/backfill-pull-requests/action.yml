@@ -23,6 +23,7 @@ runs:
       with:
         token: ${{ inputs.github-token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
+        path: 'origin'
         ref: ${{ env.GITHUB_REF_SLUG_CS }}
         fetch-depth: 0
 
