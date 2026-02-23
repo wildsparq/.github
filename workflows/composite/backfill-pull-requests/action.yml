@@ -25,6 +25,7 @@ runs:
         token: ${{ inputs.github-token }}
 
     - name: Configure Git
+      shell: bash
       run: |
         git config user.name "automation-bot"
         git config user.email "automation@yourcompany.com"
@@ -49,6 +50,7 @@ runs:
           }));
 
     - name: Process PR branches
+      shell: bash
       run: |
         echo '${{ steps.prs.outputs.result }}' > prs.json
         FAILED=""
