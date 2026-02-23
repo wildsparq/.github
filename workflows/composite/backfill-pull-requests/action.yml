@@ -23,15 +23,12 @@ runs:
       with:
         token: ${{ inputs.github-token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
-        path: 'origin'
         ref: ${{ env.GITHUB_REF_SLUG_CS }}
         fetch-depth: 0
 
     - name: Configure Git
       shell: bash
       run: |
-        cd ./origin
-        echo $(ls)
         git config user.email "actions@github.com"
         git config user.name "Github Actions"
 
@@ -41,8 +38,6 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         script: |
-          cd ./origin
-          echo $(ls)
           const { data: pulls } = await github.rest.pulls.list({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -59,8 +54,6 @@ runs:
     - name: Process PR branches
       shell: bash
       run: |
-        cd ./origin
-        echo $(ls)
         echo '${{ steps.prs.outputs.result }}' > prs.json
         FAILED=""
         FAILED_DETAILS=""
