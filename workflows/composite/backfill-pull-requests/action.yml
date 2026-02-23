@@ -101,7 +101,7 @@ runs:
 
     - name: Send Slack Notification
       if: env.FAILED_PRS != ''
-      uses: ./.github/workflows/composite/slack-notify
+      uses: ./gh/workflows/composite/slack-notify
       with:
         CHANNEL_ID: ${{ inputs.slack-channel-id }}
         BOT_TOKEN: ${{ inputs.slack-bot-token }}
