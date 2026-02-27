@@ -23,7 +23,7 @@ runs:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
         path: 'origin'
-        ref: ${{ env.GITHUB_REF_SLUG_CS }}
+        ref: ${{ env.GITHUB_HEAD_REF_SLUG_CS || env.GITHUB_REF_SLUG_CS }}
         fetch-depth: 0
 
     - name: Check for existing tag
@@ -75,8 +75,8 @@ runs:
         MATCHING_BRANCH_PREV_TAG: ${{ steps.get-git-data.outputs.prev_tag_matching_branch }}
         COMMIT_BODY: ${{steps.get-git-data.outputs.commit_body}}
       run: |
-        PIP_BREAK_SYSTEM_PACKAGES=1
-        pip3 install semver 
+        export PIP_BREAK_SYSTEM_PACKAGES=1
+        pip3 install semver
         pip3 install github-action-utils
         python3 ./gh/workflows/scripts/compute-semver.py $PREV_TAG $MATCHING_BRANCH_PREV_TAG "${{ env.GITHUB_REF_SLUG }}" $COMMIT_BODY
 
