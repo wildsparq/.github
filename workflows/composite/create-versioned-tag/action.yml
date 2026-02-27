@@ -23,7 +23,7 @@ runs:
         token: ${{ inputs.github_token }}
         repository: ${{ env.GITHUB_REPOSITORY }}
         path: 'origin'
-        ref: ${{ env.GITHUB_HEAD_REF_SLUG_CS || env.GITHUB_REF_SLUG_CS }}
+        ref: ${{ github.head_ref || github.ref_name }}
         fetch-depth: 0
 
     - name: Check for existing tag
