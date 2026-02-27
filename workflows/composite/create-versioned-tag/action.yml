@@ -31,7 +31,7 @@ runs:
       shell: bash
       run: |
         cd ./origin
-        existing_tag=$(git tag --points-at ${{github.sha}}  --sort=-version:refname  | head -n 1 | xargs)
+        existing_tag=$(git tag --points-at ${{ github.event.pull_request.head.sha || github.sha }}  --sort=-version:refname  | head -n 1 | xargs)
         echo "existing_tag=$(echo $existing_tag)" >> $GITHUB_OUTPUT
 
 
@@ -47,7 +47,7 @@ runs:
         echo "prev_tag=$(echo $prev_tag)" >> $GITHUB_OUTPUT
         prev_tag_matching_branch=$(git describe --tags  --abbrev=0 --match "*${{env.GITHUB_REF_SLUG}}*" || echo "0.0.0-${{env.GITHUB_REF_SLUG}}")
         echo "prev_tag_matching_branch=$(echo $prev_tag_matching_branch)" >> $GITHUB_OUTPUT
-        body=$(git log -1 --pretty=format:%b ${{github.sha}})
+        body=$(git log -1 --pretty=format:%b ${{ github.event.pull_request.head.sha || github.sha }})
         echo "commit_body=$(echo $body)" >> $GITHUB_OUTPUT
 
 
@@ -86,7 +86,7 @@ runs:
       with:
          tag: ${{steps.compute-version.outputs.version}}
          prerelease: true
-         commit: ${{github.sha}}
+         commit: ${{ github.event.pull_request.head.sha || github.sha }}
          token: ${{ inputs.github_token }}
          allowUpdates: true
 
