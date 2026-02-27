@@ -1,0 +1,103 @@
+name: Backfill PRs
+description: Backfill open PR branches with updates from base branch
+
+inputs:
+  base-branch:
+    description: Branch PRs are targeting
+    required: true
+
+  slack-channel-id:
+    required: true
+
+  slack-bot-token:
+    required: true
+
+  github-token:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+      name: 'Checkout Commit Origin Repo'
+      with:
+        token: ${{ inputs.github-token }}
+        repository: ${{ env.GITHUB_REPOSITORY }}
+        ref: ${{ env.GITHUB_REF_SLUG_CS }}
+        fetch-depth: 0
+
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config user.email "actions@github.com"
+        git config user.name "Github Actions"
+
+    - name: Fetch open PRs
+      uses: actions/github-script@v7
+      id: prs
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const { data: pulls } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: "open",
+            base: "${{ inputs.base-branch }}"
+          });
+          return pulls.map(pr => ({
+            number: pr.number,
+            branch: pr.head.ref,
+            isFork: pr.head.repo.full_name !== `${context.repo.owner}/${context.repo.repo}`,
+            url: pr.html_url
+          }));
+
+    - name: Process PR branches
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        echo '${{ steps.prs.outputs.result }}' > prs.json
+        FAILED=""
+        FAILED_DETAILS=""
+
+        for row in $(jq -c '.[]' prs.json); do
+          number=$(echo $row | jq -r '.number')
+          branch=$(echo $row | jq -r '.branch')
+          isFork=$(echo $row | jq -r '.isFork')
+          url=$(echo $row | jq -r '.url')
+
+          if [ "$isFork" = "true" ]; then
+            continue
+          fi
+
+          git fetch origin $branch
+          git checkout $branch
+
+          if git merge origin/${{ inputs.base-branch }} --no-edit; then
+            git push origin $branch
+          else
+            git merge --abort
+            FAILED="$FAILED #$number"
+            FAILED_DETAILS="$FAILED_DETAILS\n• PR #$number → $url"
+
+            gh api \
+              repos/${{ github.repository }}/issues/$number/comments \
+              -f body="⚠️ Automatic backfill from '${{ inputs.base-branch }}' failed. Please merge manually." \
+              -H "Authorization: token ${{ inputs.github-token }}"
+          fi
+        done
+
+        echo "FAILED_PRS=$FAILED" >> $GITHUB_ENV
+        echo "FAILED_DETAILS<<EOF" >> $GITHUB_ENV
+        echo -e "$FAILED_DETAILS" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Send Slack Notification
+      if: env.FAILED_PRS != ''
+      uses: wildsparq/.github/workflows/composite/slack-notify@main
+      with:
+        CHANNEL_ID: ${{ inputs.slack-channel-id }}
+        BOT_TOKEN: ${{ inputs.slack-bot-token }}
+        message: |
+          ⚠️ Backfill conflicts in ${{ github.repository }} for PRs:
+          ${{ env.FAILED_DETAILS }}
