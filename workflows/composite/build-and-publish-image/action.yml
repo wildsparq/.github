@@ -31,13 +31,24 @@ inputs:
     required: false
     default: 'true'
     description: "Whether to update the corresponding image tag in pending-man/pending-hotfix image.properties"
-  push_to_ECR: 
+  push_to_ECR:
     required: false
     description: 'If false, will only build image and not push it'
     default: 'true'
+  cache_from:
+    required: false
+    default: ''
+    description: 'Cache source for docker buildx (e.g. type=gha,scope=my-repo or type=registry,ref=my-registry/my-image:cache)'
+  cache_to:
+    required: false
+    default: ''
+    description: 'Cache destination for docker buildx (e.g. type=gha,scope=my-repo,mode=max or type=registry,ref=my-registry/my-image:cache,mode=max)'
 runs:
   using: "composite"
   steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Identity - Build, tag, and push image to Amazon ECR
       id: build-image
       shell: bash
@@ -45,12 +56,18 @@ runs:
         ECR_REGISTRY: ${{ inputs.registry_name }}
         DOCKER_FILE: ${{ inputs.docker_file }}
       run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
         IMAGE_NAME=$ECR_REGISTRY/${{inputs.repository_name}}:${{inputs.image_name}}
-        docker build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} ${{inputs.build_options}} .
-        if [ "${{ inputs.push_to_ECR   }}" = "true" ]; then
+
+        CACHE_ARGS=""
+        if [ -n "${{ inputs.cache_from }}" ]; then
+          CACHE_ARGS="$CACHE_ARGS --cache-from ${{ inputs.cache_from }}"
+        fi
+        if [ -n "${{ inputs.cache_to }}" ]; then
+          CACHE_ARGS="$CACHE_ARGS --cache-to ${{ inputs.cache_to }}"
+        fi
+
+        docker buildx build -f $DOCKER_FILE -t $IMAGE_NAME --platform=${{inputs.image_architecture}} --load ${{inputs.build_options}} $CACHE_ARGS .
+        if [ "${{ inputs.push_to_ECR }}" = "true" ]; then
           docker push $IMAGE_NAME
         fi
         echo "::set-output name=image::$IMAGE_NAME"
