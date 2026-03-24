@@ -4,7 +4,7 @@ https://wildsparq.atlassian.net/browse/WS-####
 ## Approach
 _How does this PR address the ticket?_
 
-[ ] Check this box if the solution includes AI-generated code
+- [ ] Check this box if the solution includes AI-generated code
 
 ## Versioning
 - [ ] Major (removed external functionality (like an API endpoint))
