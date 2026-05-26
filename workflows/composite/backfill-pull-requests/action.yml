@@ -73,7 +73,7 @@ runs:
           git fetch origin $branch
           git checkout $branch
 
-          if git merge origin/${{ inputs.base-branch }} --no-edit; then
+          if git merge origin/${{ inputs.base-branch }} --no-edit -m "Merge branch '${{ inputs.base-branch }}' into $branch [skip ci]"; then
             git push origin $branch
           else
             git merge --abort
