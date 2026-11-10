@@ -56,7 +56,7 @@ runs:
       if: ${{steps.existing-tag.outputs.existing_tag == '' }}
       run: |
         sudo apt-get update
-        sudo apt-get install python3.6
+        sudo apt-get install python3.14
 
     - uses: actions/checkout@v2
       name: 'Checkout current Repo'

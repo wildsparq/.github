@@ -1,21 +1,24 @@
-from distutils.log import fatal
 import sys
 from datetime import datetime
 import semver
 import re
 import github_action_utils as gha_utils
 
+def fatal(msg):
+    print(msg, file=sys.stderr)
+
+
 print("received args:")
 print(sys.argv)
 
 if (len(sys.argv) >= 4):
     previous_version = sys.argv[1]
-    if (previous_version == None or re.search("[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) != None):
+    if (previous_version is None or re.search(r"[A-Za-z]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]{40}", previous_version) is not None):
         previous_version = '1.0.0'
     print("Previous Version: " + previous_version)
 
     previous_version_with_branch_as_prerelease= sys.argv[2]
-    if (previous_version_with_branch_as_prerelease == None):
+    if (previous_version_with_branch_as_prerelease is None):
         fatal('Error: previous_version_with_branch_as_prerelease must be provided')
         sys.exit(1)
 
@@ -34,7 +37,7 @@ if (len(sys.argv) >= 4):
     else:
         print("Commit Body: " + commit_body)
 
-    ver = semver.Version.parse(semver.replace(str(previous_version), prerelease=None, build=None))
+    ver = semver.Version.parse(str(previous_version)).replace(prerelease=None, build=None)
 
     if (branch_name == 'main'):
         if (commit_body.find("[x] Major") != -1 or commit_body.find("[x ] Major") != -1 or commit_body.find("[ x] Major") != -1):
@@ -46,16 +49,16 @@ if (len(sys.argv) >= 4):
     else: # note: Using prerelease instead of build parameter of semver due to lack of docker support for "+" in image name
         try:
             prev_ver_from_branch = semver.Version.parse(previous_version_with_branch_as_prerelease)
-            if (ver == semver.replace(str(prev_ver_from_branch), prerelease=None, build=None)):
+            if (ver == prev_ver_from_branch.replace(prerelease=None, build=None)):
                 ver = prev_ver_from_branch
             
             build = ver.prerelease
-            if (build == None or build.find(branch_name+".") == -1):
+            if (build is None or build.find(branch_name+".") == -1):
                 raise Exception("no build for current tag, accepting default prerelease instead")
             else:
                 ver = ver.bump_prerelease()
-        except:
-            ver = semver.replace(str(ver), prerelease=branch_name+"."+str("0"))
+        except Exception:
+            ver = ver.replace(prerelease=branch_name + ".0")
 
     print(ver)
     gha_utils.set_output("version", str(ver))
